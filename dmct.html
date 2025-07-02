@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Module Selector - Permalink Dataset</title>
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <div class="dataset-select">
+        <select id="dataset">
+          <option value="DMCT/Y3-utopian.csv">Year 3: Remove promo2/change credits</option>
+          <option value="DMCT/Y3-utopian+datavis.csv">Year 3: Add Data Visualisation</option>
+          <option value="DMCT/Y2-coreMA2013.csv">Year 2: Interface Narratives as core</option>
+          <option value="DMCT/Y2-shiftDataVis.csv">Year 2: Shift Data Vis to 3rd year</option>
+          <option value="DMCT/Y1.csv">Year 1: All Core Modules</option>
+        </select>
+      </div>
+      <div class="status-bar" id="status-bar"></div>
+    </div>
+    <div id="csv-error"></div>
+    <div id="warnings"></div>
+    <div class="modules-blocks">
+      <div class="modules-block">
+        <div class="block-title">Autumn + Spring</div>
+        <div class="module-list" id="autumnspring-list"></div>
+      </div>
+      <div class="modules-block">
+        <div class="block-title">Autumn Only</div>
+        <div class="module-list" id="autumn-list"></div>
+      </div>
+      <div class="modules-block">
+        <div class="block-title">Spring Only</div>
+        <div class="module-list" id="spring-list"></div>
+      </div>
+    </div>
+    <div class="current-selection" id="current-selection"></div>
+  </div>
+  <script src="src/module-select.js"></script>
+</body>
+</html>

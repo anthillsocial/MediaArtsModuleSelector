@@ -1,0 +1,96 @@
+:root {
+      --mod-header-color: #748f94;
+      --mod-header-grey: #bbb;
+      --mod-title-color: #334549;
+      --mod-title-grey: #aaa;
+    }
+    body { font-family: system-ui,sans-serif; background:#f4f4f9; margin:0; }
+    .container { max-width:1100px; margin:0 auto 1.2rem auto; background:#fff; padding:0.7em 0.5em 0.6em 0.5em; border-radius:0.7em; box-shadow:0 1px 8px #0001; }
+    .top-bar { display: flex; align-items: center; gap: 1em; margin-bottom: 0.8em;}
+    .dataset-select { margin-bottom: 0; }
+    select { font-size: 1em; padding: 0.15em 0.5em; }
+    .modules-blocks { display:flex; gap:0.7em; margin-bottom:0.7em; align-items:flex-start; }
+    .modules-block { background:#f8fafd; padding:0.4em 0.35em 0.2em 0.35em; border-radius:0.4em; box-shadow:0 1px 2px #0001; flex:1 1 0; min-width:180px; }
+    .block-title { font-size:0.98em; margin-bottom:0.23em; color:#223366; font-weight:bold; text-align:center; padding-bottom:0.1em; border-bottom:1px solid #dde3f6; margin-top:0; letter-spacing:0.15px;}
+    .module-list { display:flex; flex-direction:column; gap:0.32em;}
+    .module-card { background:#f6f8fb; border:0.6px solid #dde3f6; border-radius:0.28em; padding:0.10em 0.40em 0.08em 0.40em; cursor:pointer; position:relative; transition:background 0.13s, border-color 0.13s, color 0.09s; font-size:0.95em; min-height:unset; user-select:none; margin-bottom:0.01em; font-weight:500; display:flex; flex-direction:column; gap:0.01em;}
+    .module-card.core { background:#e2eeff; border-color:#3896fa; color:#123470;}
+    .module-card.selected { background:#aaf2bc; border-color:#20ba55; color:#14522c;}
+    .module-card.disabled { background:#ededed; color:var(--mod-header-grey); cursor:not-allowed; border-style:dashed;}
+    .module-card .mod-row {
+      display: grid;
+      grid-template-columns: minmax(0,1.02fr) minmax(0,1fr) minmax(0,1.1fr);
+      align-items: center;
+      margin-bottom: 0;
+      width: 100%;
+      gap: 0.26em;
+      min-height: 1.3em;
+      white-space: nowrap;
+    }
+    .module-card .code {
+      font-size:0.89em;
+      font-weight:bold;
+      color: var(--mod-header-color);
+      min-width:44px;
+      margin-right:0.33em;
+      align-self: center;
+      white-space:nowrap;
+    }
+    .module-card .mod-type {
+      font-size:0.78em;
+      color: var(--mod-header-color);
+      opacity: 0.70;
+      text-transform:capitalize;
+      margin-right:0.36em;
+      font-weight: 500;
+      letter-spacing:0.01em;
+      align-self: center;
+    }
+    .module-card .credit {
+      font-size:0.81em;
+      font-weight:400;
+      color: var(--mod-header-color);
+      opacity:0.85;
+      justify-self:end;
+      text-align: right;
+      white-space:nowrap;
+      overflow:visible;
+    }
+    .split-credit { 
+      font-size:0.73em; 
+      vertical-align:super; 
+      line-height:1; 
+      color: var(--mod-header-color);
+      font-weight:400;
+      margin-left:2px;
+      margin-right:1px;
+    }
+    .module-card.disabled .mod-type,
+    .module-card.disabled .code,
+    .module-card.disabled .credit {
+      color: var(--mod-header-grey);
+      opacity: 1;
+    }
+    .module-card.disabled .credit .split-credit {
+      color: var(--mod-header-grey) !important;
+    }
+    .module-card .mod-title {
+      font-size:0.85em;
+      font-weight:400;
+      color: var(--mod-title-color);
+      line-height:1.13;
+      margin:0;
+      word-break:break-word;
+      margin-top:2px;
+    }
+    .module-card.disabled .mod-title {
+      color: var(--mod-title-grey);
+    }
+    .warning { background:#e5f3ff; color:#23577e; padding:0.43em 0.9em; border-radius:0.47em; margin-bottom:0.7em; border:1px solid #b1d3e6; font-size:1em; display:inline-block; }
+    .status-bar { background:#f2f6ff; border-radius:0.26em; padding:0.37em 0.48em; font-size:0.93em; color:#234; display:inline-block;}
+    .current-selection { background:#f8f9fd; border-radius:0.4em; padding:0.5em 0.6em 0.37em 0.6em; box-shadow:0 1px 2px #0001; margin-top:0.7em; font-size:0.94em;}
+    .current-selection h3 { margin:0 0 0.15em 0; font-size:0.97em; color:#233360; letter-spacing:.2px;}
+    .current-selection ul { margin:0 0 0.12em 0; padding-left:1.1em;}
+    .current-selection li { font-size:0.93em; margin-bottom:0.03em; color:#222;}
+    .csv-error { color: #c00; font-size: 1em; background: #fff5f5; padding: 0.6em; border-radius: 0.3em; margin-bottom: 1em; border: 1px solid #eed;}
+    @media (max-width:950px) { .modules-blocks { flex-direction:column; gap:0.4em;} .modules-block { margin-bottom:0.2em;} .top-bar {flex-direction:column; align-items:stretch;} .status-bar {margin-top:0.7em;} }
