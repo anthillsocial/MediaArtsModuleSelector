@@ -1,25 +1,36 @@
-Generate a dynamic user interface which allows users to select from a number of modules for an undergraduate university course. 
+# Undergraduate Module Selector
 
-All logic should be defined within a seperate CSV file in the following format.
-The meaning of the headings is as follows:
-credits = how much a module is worth 
-term = if a module runs in the Autumn, Spring, Or both Autumn+SPring terms.
-type = theory or practice 
-code = the unique module identifier. 
-name = human readable name of the module
-core = can be a 'core' module which is selected by default or an 'optional' module. A core module can also be a choice of this or another as defined in the 'or' heading.
-or = the module must be a choice of this or another
-exclude = modules that cannot be selected with this module
-group = modules that must be selected with this module
+This project provides a dynamic web-based interface for undergraduate students to select modules for their course, following rules defined in external CSV files.
 
-The UI should:
-1. allow a user to click anywhere on a module to select it.
-2. selected modules should be highlighted in green. 
-3. Display currently selected module.
-4. The interface must prevent users from selecting further modules if the running credit total will be greater than 60 for each term.
-5. Make sure the user can click anywhere on a module and not just a tick box.
+## Features
 
-THE DATA
+- **CSV-driven logic:** All rules and modules are defined in CSV files that can be swapped using a dropdown menu.
+- **Visual, interactive selection:** Click anywhere on a module card to select or deselect it (where allowed).
+- **Credit enforcement:** Prevents users from exceeding the 60-credit limit per term.
+- **Mutual exclusions & grouping:** Handles mutually exclusive modules (`or`), required module combinations (`group`), and incompatible modules (`exclude`).
+- **Core and optional modules:** Core modules are highlighted, and some may be pre-selected.
+- **Permalinks:** The chosen dataset is reflected in the URL, enabling shareable direct links to a dataset.
+- **Current selection summary:** Displays all selected modules in a summary panel.
+
+## CSV Data Format
+
+Each row in the CSV represents a module. Required columns:
+
+| Column   | Description                                                                                 |
+|----------|---------------------------------------------------------------------------------------------|
+| credits  | Module credit value (e.g. 15 or 30)                                                         |
+| term     | Which term the module runs in: `Autumn`, `Spring`, or `Autumn+Spring`                       |
+| type     | `theory` or `practice`                                                                      |
+| code     | Unique module code (e.g. `MA3811`)                                                          |
+| name     | Human-readable module name                                                                  |
+| core     | `core` if the module is compulsory, `option` if optional                                    |
+| or       | Mutually exclusive module group (e.g. `MA3801/MA3061` means only one can be selected)       |
+| exclude  | Modules that cannot be taken together (comma or slash-separated codes)                      |
+| group    | Modules that must be selected together (comma or slash-separated codes)                     |
+
+### Example
+
+```csv
 credits,term,type,code,name,core,or,exclude,group
 30,Autumn+Spring,Practice,MA3811,"Entrepreneurship, Creative Thinking, Digital Marketing",core,,,
 30,Autumn+Spring,Practice,MA3801,Advanced Digital Media,core,MA3801/MA3061,,
@@ -33,7 +44,7 @@ credits,term,type,code,name,core,or,exclude,group
 30,Autumn,Practice,MA3004,Documentary 1,option,,"MA3005,MA3807",
 30,Autumn,Practice,MA3020,Contemporary Digital Practice 1,option,,,MA3120
 30,Autumn,Practice,MA3022,Creative Sound Art & Design,option,,,MA3122
-30,Autumn,Practice,MA3023,Animation & Visual Effects 1,option,,,
+30,Autumn,Practice,MA3023,Animation & Visual Effects 1,option,,,MA3024
 30,Autumn,Practice,MA3028,Promo 1,option,,,
 15,Autumn,Theory,MA3050,Beyond Documentary,option,,,
 15,Autumn,Theory,MA3081,Film Style & Interpretation : Realism,option,,,
@@ -46,3 +57,4 @@ credits,term,type,code,name,core,or,exclude,group
 30,Spring,Practice,MA3120,Contemporary Digital Practice 2,option,,,MA3020
 30,Spring,Practice,MA3024,Animation & Visual Effects 2,option,,,MA3023
 30,Spring,Practice,MA3029,Promo 2,option,,,MA3023
+```
