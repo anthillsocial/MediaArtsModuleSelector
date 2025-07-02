@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Module Selector - Split Credit Display (Superscript)</title>
+  <style>
+    body { font-family: system-ui,sans-serif; background:#f4f4f9; margin:0; }
+    .container { max-width:1100px; margin:0 auto 1.2rem auto; background:#fff; padding:0.7em 0.5em 0.6em 0.5em; border-radius:0.7em; box-shadow:0 1px 8px #0001; }
+    .modules-blocks { display:flex; gap:0.7em; margin-bottom:0.7em; align-items:flex-start; }
+    .modules-block { background:#f8fafd; padding:0.4em 0.35em 0.2em 0.35em; border-radius:0.4em; box-shadow:0 1px 2px #0001; flex:1 1 0; min-width:180px; }
+    .block-title { font-size:0.98em; margin-bottom:0.23em; color:#223366; font-weight:bold; text-align:center; padding-bottom:0.1em; border-bottom:1px solid #dde3f6; margin-top:0; letter-spacing:0.15px;}
+    .module-list { display:flex; flex-direction:column; gap:0.32em;}
+    .module-card { background:#f6f8fb; border:0.6px solid #dde3f6; border-radius:0.28em; padding:0.10em 0.40em 0.08em 0.40em; cursor:pointer; position:relative; transition:background 0.13s, border-color 0.13s, color 0.09s; font-size:0.95em; min-height:unset; user-select:none; margin-bottom:0.01em; font-weight:500; display:flex; flex-direction:column; gap:0.01em;}
+    .module-card.core { background:#e2eeff; border-color:#3896fa; color:#123470;}
+    .module-card.selected { background:#aaf2bc; border-color:#20ba55; color:#14522c;}
+    .module-card.disabled { background:#ededed; color:#aaa; cursor:not-allowed; border-style:dashed;}
+    .module-card .mod-row { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; margin-bottom:0; width:100%; gap:0.10em; min-height:1.3em;}
+    .module-card .code { font-weight:600; color:#8a97b0; font-size:0.82em; letter-spacing:0.08px; opacity:0.8; justify-self:start; min-width:44px;}
+    .module-card.disabled .code { color:#bbb; opacity:1;}
+    .module-card .mod-type { font-size:0.78em; color:#6b7280; text-transform:capitalize; font-weight:500; opacity:0.75; text-align:center; justify-self:center; margin:0 auto;}
+    .module-card .credit { font-size:0.79em; opacity:0.64; color:#222; font-weight:500; white-space:nowrap; justify-self:end;}
+    .split-credit { font-size:0.74em; vertical-align:super; line-height:1; color:#555; font-weight:400;margin-left:0.2em;}
+    .module-card .mod-title { font-size:0.96em; font-weight:400; color:inherit; line-height:1.13; margin:0; word-break:break-word;}
+    .module-card.disabled .mod-title { color:#aaa;}
+    .warning { background:#fff6d3; color:#ad7800; padding:0.3em 0.44em; border-radius:0.39em; margin-bottom:0.5em; border:1px solid #ffeaa7; font-size:0.95em; display:inline-block;}
+    .status-bar { background:#f2f6ff; border-radius:0.26em; margin-bottom:0.7em; padding:0.37em 0.48em; font-size:0.93em; color:#234; display:inline-block;}
+    .current-selection { background:#f8f9fd; border-radius:0.4em; padding:0.5em 0.6em 0.37em 0.6em; box-shadow:0 1px 2px #0001; margin-top:0.7em; font-size:0.94em;}
+    .current-selection h3 { margin:0 0 0.15em 0; font-size:0.97em; color:#233360; letter-spacing:.2px;}
+    .current-selection ul { margin:0 0 0.12em 0; padding-left:1.1em;}
+    .current-selection li { font-size:0.93em; margin-bottom:0.03em; color:#222;}
+    @media (max-width:950px) { .modules-blocks { flex-direction:column; gap:0.4em;} .modules-block { margin-bottom:0.2em;}}
+
+    .module-card .code,
+    .module-card .mod-type,
+    .module-card .credit {
+      
+      color: #555;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="warnings"></div>
+    <div class="status-bar" id="status-bar"></div>
+    <div class="modules-blocks">
+      <div class="modules-block">
+        <div class="block-title">Autumn + Spring</div>
+        <div class="module-list" id="autumnspring-list"></div>
+      </div>
+      <div class="modules-block">
+        <div class="block-title">Autumn Only</div>
+        <div class="module-list" id="autumn-list"></div>
+      </div>
+      <div class="modules-block">
+        <div class="block-title">Spring Only</div>
+        <div class="module-list" id="spring-list"></div>
+      </div>
+    </div>
+    <div class="current-selection" id="current-selection"></div>
+  </div>
+  <script>
+    const csvData = `
+credits,term,type,code,name,core,or,exclude,group
+30,Autumn+Spring,Practice,MA3811,"Entrepreneurship, Creative Thinking, Digital Marketing",core,,,
+30,Autumn+Spring,Practice,MA3801,Advanced Digital Media,core,MA3801/MA3061,,
+30,Autumn+Spring,Theory,MA3061,Dissertation,core,MA3061/MA3801,,
+30,Autumn+Spring,Practice,MA3005,Advanced Screenwriting,option,,MA3807,
+30,Autumn+Spring,Practice,MA3006,Producing Film & TV,option,,,MA31XX
+30,Autumn+Spring,Practice,MA3007,Advanced Editing,option,,,
+30,Autumn+Spring,Practice,MA3122,Creative Sound to Picture,option,,,MA3022
+30,Autumn+Spring,Practice,MA31XX,Collaboration Project,option,,,
+30,Autumn+Spring,Practice,MA3807,Advanced Virtual Production,option,,,
+30,Autumn,Practice,MA3004,Documentary 1,option,,MA3005/MA3807,
+30,Autumn,Practice,MA3020,Contemporary Digital Practice 1,option,,,
+30,Autumn,Practice,MA3022,Creative Sound Art & Design,option,,,MA3122
+30,Autumn,Practice,MA3023,Animation & Visual Effects 1,option,,,MA3024/MA3023
+30,Autumn,Practice,MA3028,Promo 1,option,,,
+15,Autumn,Theory,MA3050,Beyond Documentary,option,,,
+15,Autumn,Theory,MA3081,Film Style & Interpretation : Realism,option,,,
+15,Autumn,Theory,MA3086,Political Cinema,option,,,
+15,Spring,Theory,MA3044,Music Video,option,,,
+15,Spring,Theory,MA3055,Film Form,option,,,
+15,Spring,Theory,MA3092,Poetics of Contemporary TV,option,,,
+15,Spring,Theory,MA3806,"Digital Images, People, AI",option,,,
+30,Spring,Practice,MA3102,Documentary 2,option,,MA3005/MA3807,
+30,Spring,Practice,MA3120,Contemporary Digital Practice 2,option,,,
+30,Spring,Practice,MA3024,Animation & Visual Effects 2,option,,,MA3023/MA3024
+30,Spring,Practice,MA3029,Promo 2,option,,,
+    `.trim();
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const modules = parseCSV(csvData);
+      new ModuleSelector(modules);
+    });
+
+    function parseCSV(data) {
+      const [header, ...rows] = data.trim().split("\n");
+      const keys = header.split(",").map(k => k.trim());
+      return rows
+        .map(row => {
+          let vals = [];
+          let curr = "", inQuotes = false;
+          for (let i = 0; i < row.length; ++i) {
+            let ch = row[i];
+            if (ch === '"') { inQuotes = !inQuotes; continue; }
+            if (ch === "," && !inQuotes) { vals.push(curr.trim()); curr = ""; }
+            else curr += ch;
+          }
+          vals.push(curr.trim());
+          let obj = {};
+          keys.forEach((k, idx) => obj[k] = (vals[idx] || ""));
+          ["exclude", "group"].forEach(key => {
+            obj[key] = obj[key]
+              ? obj[key].split(/[,/]/).map(s => s.trim()).filter(Boolean)
+              : [];
+          });
+          obj.credits = Number(obj.credits);
+          obj.term = obj.term.trim();
+          obj.core = obj.core.trim();
+          obj.or = obj.or.trim();
+          obj.type = obj.type.trim();
+          return obj;
+        });
+    }
+
+    function termsForModule(mod) {
+      if (/Autumn\+Spring/i.test(mod.term)) return ["AutumnSpring"];
+      if (/Autumn/i.test(mod.term) && !/Spring/i.test(mod.term)) return ["Autumn"];
+      if (/Spring/i.test(mod.term) && !/Autumn/i.test(mod.term)) return ["Spring"];
+      return [];
+    }
+
+    class ModuleSelector {
+      constructor(modules) {
+        this.modules = modules;
+        this.selected = new Set();
+        this.creditByTerm = { Autumn: 0, Spring: 0 };
+        this.exclusions = {};
+        this.groupMap = {};
+        this.codeMap = {};
+        modules.forEach(m => {
+          this.codeMap[m.code] = m;
+          m.exclude.forEach(e => {
+            this.exclusions[m.code] = this.exclusions[m.code] || [];
+            this.exclusions[m.code].push(e);
+          });
+          m.group.forEach(g => {
+            this.groupMap[m.code] = this.groupMap[m.code] || [];
+            this.groupMap[m.code].push(g);
+          });
+        });
+        this.orGroups = this.getOrGroups();
+        this.statusBar = document.getElementById("status-bar");
+        this.warnings = document.getElementById("warnings");
+        this.autumnSpringList = document.getElementById("autumnspring-list");
+        this.autumnList = document.getElementById("autumn-list");
+        this.springList = document.getElementById("spring-list");
+        this.selectedList = document.getElementById("current-selection");
+
+        // Select all modules marked as 'core' by default on load
+        modules.forEach(m => {
+          if (m.core === 'core') this.selectModule(m.code);
+        });
+
+        this.renderGrid();
+        this.updateStatus();
+        this.updateSelectedList();
+      }
+
+      getOrGroups() {
+        let groups = {};
+        this.modules.forEach(m => {
+          if (m.or) {
+            const ids = m.or.split("/").map(s => s.trim());
+            if (ids.length > 1) groups[m.or] = ids;
+          }
+        });
+        return Object.values(groups);
+      }
+
+      requireOrCoreSelection() {
+        for (let group of this.orGroups) {
+          if (!group.some(code => this.selected.has(code))) return group;
+        }
+        return null;
+      }
+
+      canSelect(module) {
+        const requiredOr = this.requireOrCoreSelection();
+        if (requiredOr && !requiredOr.includes(module.code)) return false;
+        for (let sel of this.selected) {
+          const selMod = this.codeMap[sel];
+          if (selMod.exclude.includes(module.code) || module.exclude.includes(sel)) return false;
+        }
+        let testCredit = { ...this.creditByTerm };
+        let tFor = [];
+        if (/Autumn\+Spring/i.test(module.term)) tFor = ["Autumn", "Spring"];
+        else if (/Autumn/i.test(module.term) && !/Spring/i.test(module.term)) tFor = ["Autumn"];
+        else if (/Spring/i.test(module.term) && !/Autumn/i.test(module.term)) tFor = ["Spring"];
+        tFor.forEach(term => {
+          testCredit[term] = (testCredit[term] || 0) + module.credits / tFor.length;
+        });
+        if (testCredit.Autumn > 60 || testCredit.Spring > 60) return false;
+        return true;
+      }
+
+      findGroupMembers(code) {
+        const groupCodes = new Set([code]);
+        const thisMod = this.codeMap[code];
+        thisMod.group.forEach(g => groupCodes.add(g));
+        this.modules.forEach(m => {
+          if (m.group.includes(code)) groupCodes.add(m.code);
+        });
+        return Array.from(groupCodes);
+      }
+
+      handleModuleClick(module, e) {
+        e.preventDefault();
+        if (!this.canSelect(module) && !this.selected.has(module.code)) return;
+        if (this.selected.has(module.code)) {
+          this.deselectModule(module.code, true);
+        } else {
+          this.selectModule(module.code, true);
+        }
+        this.updateStatus();
+        this.updateSelectedList();
+        this.renderGrid();
+      }
+
+      selectModule(code, recurse = false) {
+        if (this.selected.has(code)) return;
+        const allGroupMembers = this.findGroupMembers(code);
+        allGroupMembers.forEach(c => {
+          if (!this.selected.has(c)) {
+            if (c !== code) this.selectModule(c, true);
+            else {
+              const mod = this.codeMap[c];
+              this.selected.add(c);
+              let tFor = [];
+              if (/Autumn\+Spring/i.test(mod.term)) tFor = ["Autumn", "Spring"];
+              else if (/Autumn/i.test(mod.term) && !/Spring/i.test(mod.term)) tFor = ["Autumn"];
+              else if (/Spring/i.test(mod.term) && !/Autumn/i.test(mod.term)) tFor = ["Spring"];
+              tFor.forEach(term => {
+                this.creditByTerm[term] = (this.creditByTerm[term] || 0) + mod.credits / tFor.length;
+              });
+            }
+          }
+        });
+        for (let group of this.orGroups) {
+          if (group.includes(code)) {
+            group.forEach(other => { if (other !== code) this.deselectModule(other); });
+          }
+        }
+      }
+
+      deselectModule(code, recurse = false) {
+        if (!this.selected.has(code)) return;
+        const allGroupMembers = this.findGroupMembers(code);
+        allGroupMembers.forEach(c => {
+          if (this.selected.has(c)) {
+            if (c !== code) this.deselectModule(c, true);
+            else {
+              const mod = this.codeMap[c];
+              this.selected.delete(c);
+              let tFor = [];
+              if (/Autumn\+Spring/i.test(mod.term)) tFor = ["Autumn", "Spring"];
+              else if (/Autumn/i.test(mod.term) && !/Spring/i.test(mod.term)) tFor = ["Autumn"];
+              else if (/Spring/i.test(mod.term) && !/Autumn/i.test(mod.term)) tFor = ["Spring"];
+              tFor.forEach(term => {
+                this.creditByTerm[term] -= mod.credits / tFor.length;
+              });
+            }
+          }
+        });
+      }
+
+      renderGrid() {
+        this.autumnSpringList.innerHTML = "";
+        this.autumnList.innerHTML = "";
+        this.springList.innerHTML = "";
+
+        const createCard = module => {
+          const isAutumnSpring = /Autumn\+Spring/i.test(module.term);
+          const creditLabel = isAutumnSpring
+            ? `${module.credits}<sup class="split-credit">(${module.credits/2}+${module.credits/2})</sup> credit`
+            : `${module.credits} credit`;
+          const card = document.createElement("div");
+          card.className = "module-card";
+          if (this.selected.has(module.code)) {
+            card.classList.add("selected");
+          } else if (module.core === 'core') {
+            card.classList.add("core");
+          }
+          if (!this.canSelect(module) && !this.selected.has(module.code)) card.classList.add("disabled");
+
+          card.innerHTML = `
+            <div class="mod-row">
+              <span class="code">${module.code}</span>
+              <span class="mod-type">${module.type}</span>
+              <span class="credit">${creditLabel}</span>
+            </div>
+            <div class="mod-title">${module.name}</div>
+          `;
+          card.addEventListener("click", this.handleModuleClick.bind(this, module));
+          return card;
+        };
+
+        this.modules.forEach(module => {
+          const terms = termsForModule(module);
+          if (terms.includes("AutumnSpring")) this.autumnSpringList.appendChild(createCard(module));
+          if (terms.includes("Autumn")) this.autumnList.appendChild(createCard(module));
+          if (terms.includes("Spring")) this.springList.appendChild(createCard(module));
+        });
+      }
+
+      updateStatus() {
+        let statusMsg = `
+          <b>Autumn:</b> ${this.creditByTerm.Autumn || 0}/60 credits &nbsp; | &nbsp;
+          <b>Spring:</b> ${this.creditByTerm.Spring || 0}/60 credits
+        `;
+        const requiredOr = this.requireOrCoreSelection();
+        this.warnings.innerHTML = "";
+        if (requiredOr) {
+          this.warnings.innerHTML = `<div class="warning">Please select one of: <b>${requiredOr.map(code => this.codeMap[code].name).join(" or ")}</b> to continue.</div>`;
+        } else if ((this.creditByTerm.Autumn || 0) > 60 || (this.creditByTerm.Spring || 0) > 60) {
+          this.warnings.innerHTML = `<div class="warning">Credit limit exceeded! Max 60 credits per term.</div>`;
+        }
+        this.statusBar.innerHTML = statusMsg;
+      }
+
+      updateSelectedList() {
+        let html = "<h3>Current Selection</h3>";
+        if (!this.selected.size) {
+          html += "<div>No modules selected.</div>";
+        } else {
+          html += "<ul>";
+          Array.from(this.selected)
+            .map(code => this.codeMap[code])
+            .sort((a, b) => a.term.localeCompare(b.term) || a.name.localeCompare(b.name))
+            .forEach(m => {
+              html += `<li>${m.type.charAt(0).toUpperCase() + m.type.slice(1)} - ${m.name} (${m.code}) - ${m.credits} credit, ${m.term}</li>`;
+            });
+          html += "</ul>";
+        }
+        this.selectedList.innerHTML = html;
+      }
+    }
+  </script>
+</body>
+</html>
