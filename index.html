@@ -323,15 +323,14 @@
         return true;
       }
 
-      findGroupMembers(code) {
-        const groupCodes = new Set([code]);
-        const thisMod = this.codeMap[code];
-        thisMod.group.forEach(g => groupCodes.add(g));
-        this.modules.forEach(m => {
-          if (m.group.includes(code)) groupCodes.add(m.code);
-        });
-        return Array.from(groupCodes);
-      }
+    // NEW
+findGroupMembers(code) {
+  const groupCodes = new Set([code]);
+  const thisMod = this.codeMap[code];
+  // Only include modules explicitly listed in the current module's group
+  thisMod.group.forEach(g => groupCodes.add(g));
+  return Array.from(groupCodes);
+}
 
       handleModuleClick(module, e) {
   e.preventDefault();
