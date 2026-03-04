@@ -121,7 +121,7 @@ select {
   white-space:nowrap;
 }
 
-/* Second row: title + right-aligned link */
+/* Second row: title + right-aligned view link */
 .module-card .mod-row:last-child {
   grid-template-columns:minmax(0,1fr) auto;
   align-items:start;
@@ -161,19 +161,27 @@ select {
   word-break:break-word;
 }
 
-.module-card .link {
-  font-size:0.81em;
+.module-card .view-link {
+  font-size:0.78em;
   white-space:nowrap;
   margin-left:0.5em;
+  align-self:flex-end;
 }
 
-.module-card .link a {
+.module-card .view-link a {
   color:var(--mod-header-color);
   text-decoration:none;
+  border:0.6px solid var(--mod-header-color);
+  border-radius:0.2em;
+  padding:0.05em 0.35em;
+  opacity:0.75;
+  transition:opacity 0.12s, background 0.12s;
 }
 
-.module-card .link a:hover {
-  text-decoration:underline;
+.module-card .view-link a:hover {
+  opacity:1;
+  background:rgba(116,143,148,0.12);
+  text-decoration:none;
 }
 
 .warning {
@@ -204,6 +212,8 @@ select {
   margin-top:0.7em;
   font-size:0.94em;
 }
+
+/* ===== IFRAME MODAL ===== */
 .iframe-modal {
   position: fixed;
   inset: 0;
@@ -226,14 +236,42 @@ select {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+}
+
+.iframe-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45em 0.8em;
+  background: #f0f2f7;
+  border-bottom: 1px solid #dde3f6;
+  gap: 0.5em;
+}
+
+.iframe-title {
+  font-size: 0.93em;
+  font-weight: 600;
+  color: #334549;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .iframe-close {
-  align-self: flex-end;
-  padding: 0.5em 1em;
+  padding: 0.3em 0.9em;
   border: none;
-  background: #eee;
+  background: #d0d6e8;
+  border-radius: 0.3em;
   cursor: pointer;
+  font-size: 0.9em;
+  color: #223;
+  transition: background 0.13s;
+}
+
+.iframe-close:hover {
+  background: #b0b8d0;
 }
 
 #iframe-modal iframe {
@@ -258,23 +296,6 @@ select {
           <option value="DMCT/Y2.csv">Year 2</option>
           <!---Y3 Proposal--->
           <option value="DMCT/Y3.csv">Year 3</option>
-          <!---Y3 New Proposal
-          <option value="DMCT/Y3-Proposal-2.csv">Year 3 (alt config minus 30creds)</option>--->
-          
-        
-         <!--
-                    <option value="DMCT/Y3-2024-25.csv">Year 3: current 2024-25 options</option>
-          <option value="DMCT/Y2-2024-25.csv">Year 2: current 2024-25 options</option>
-          <option value="DMCT/Y3+MA2013.csv">Year 3: with MA2013 Interface Narr' added</option>
-          <option value="DMCT/Y3+MA2806.csv">Year 3: with MA2806 Data Vis' added</option>
-          <option value="DMCT/Y3+CDP.csv">Year 3: MA3020 CDP as 15 credits</option>
-          <option value="DMCT/Y3-minusPromo2.csv">Year 3: Minus Promo2 CDP@15 credits</option>
-          <option value="DMCT/Y2-2024-25.csv">Year 2: current 2024-25 options</option>
-          <option value="DMCT/Y2-swap-MA2013-MA2806.csv">Year 2: MA2013 Interface Narr' Core'</option>
-          <option value="DMCT/Y2-MA2013.csv">Year 2: Minus MA2013 Interface Narr'</option>
-          <option value="DMCT/Y2-MA2806.csv">Year 2: Minus MA2806 Data Vis'</option>
-          
-        -->
         </select>
       </div>
       <div class="status-bar" id="status-bar"></div>
@@ -297,11 +318,26 @@ select {
     </div>
     <div class="current-selection" id="current-selection"></div>
   </div>
+
+  <!-- IFRAME MODAL -->
+  <div id="iframe-modal" class="iframe-modal">
+    <div class="iframe-inner">
+      <div class="iframe-toolbar">
+        <span class="iframe-title" id="iframe-modal-title"></span>
+        <button class="iframe-close" onclick="closeIframe()">✕ Close</button>
+      </div>
+      <iframe id="module-iframe" src="" frameborder="0"></iframe>
+    </div>
+  </div>
+
 <script>
-function openInIframe(url) {
+// ===== MODAL HELPERS =====
+function openInIframe(url, title) {
   const modal = document.getElementById("iframe-modal");
   const iframe = document.getElementById("module-iframe");
+  const titleEl = document.getElementById("iframe-modal-title");
   iframe.src = url;
+  if (titleEl) titleEl.textContent = title || url;
   modal.classList.add("active");
 }
 
@@ -312,6 +348,26 @@ function closeIframe() {
   modal.classList.remove("active");
 }
 
+// Close modal when clicking the backdrop
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("iframe-modal").addEventListener("click", function(e) {
+    if (e.target === this) closeIframe();
+  });
+
+  // Close on Escape key
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeIframe();
+  });
+});
+
+// ===== URL helpers (used for the view link) =====
+// Edit this function to produce the correct URL for your module pages
+function modulePageURL(module) {
+  // Example: adjust the base URL to wherever your module pages live
+  return `https://www.example.ac.uk/modules/${encodeURIComponent(module.code)}`;
+}
+
+// ===== DATASET / PERMALINK =====
 let selectorInstance = null;
 
 async function loadModulesFromFile(csvFile) {
@@ -329,7 +385,6 @@ async function loadModulesFromFile(csvFile) {
   }
 }
 
-// Permalink helpers
 function setDatasetInURL(value) {
   const url = new URL(window.location);
   url.searchParams.set('dataset', value);
@@ -343,7 +398,6 @@ function getDatasetFromURL(defaultValue) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const datasetSelect = document.getElementById("dataset");
-  // Load from URL if set, otherwise from first option
   const initialValue = getDatasetFromURL(datasetSelect.value);
   datasetSelect.value = initialValue;
   loadModulesFromFile(initialValue);
@@ -354,11 +408,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// ===== CSV PARSER =====
 function parseCSV(data) {
-  const [header, ...rows] = data.trim().split("\n");
-  const keys = header.split(",").map(k => k.trim());
-  return rows
-    .map(row => {
+const [header, ...rows] = data.trim().split("\n");
+const keys = header.split(",").map(k => k.trim());
+return rows
+  .filter(row => row.replace(/,/g, '').trim() !== '')
+  .map(row => {
       let vals = [];
       let curr = "", inQuotes = false;
       for (let i = 0; i < row.length; ++i) {
@@ -380,6 +436,7 @@ function parseCSV(data) {
       obj.core = obj.core.trim();
       obj.or = obj.or.trim();
       obj.type = obj.type.trim();
+      obj.moodleUrl = obj.moodleUrl.trim();
       return obj;
     });
 }
@@ -391,6 +448,7 @@ function termsForModule(mod) {
   return [];
 }
 
+// ===== MODULE SELECTOR CLASS =====
 class ModuleSelector {
   constructor(modules) {
     this.modules = modules;
@@ -400,13 +458,11 @@ class ModuleSelector {
     this.groupMap = {};
     this.codeMap = {};
 
-    // Detect "or" groups for core modules
     this.orGroups = this.getOrGroups();
     const codesInOrCore = new Set(this.orGroups.flat().filter(code =>
       this.modules.find(m => m.code === code && m.core === 'core')
     ));
 
-    // Build lookups
     modules.forEach(m => {
       this.codeMap[m.code] = m;
       m.exclude.forEach(e => {
@@ -417,7 +473,6 @@ class ModuleSelector {
         this.groupMap[m.code] = this.groupMap[m.code] || [];
         this.groupMap[m.code].push(g);
       });
-      // Select default cores that aren’t mutually exclusive
       if (m.core === 'core' && !codesInOrCore.has(m.code)) {
         this.selectModule(m.code);
       }
@@ -491,39 +546,30 @@ class ModuleSelector {
     return true;
   }
 
-// Directional grouping: only follow forward links unless both list each other
-findGroupMembers(code) {
-  const visited = new Set();
-  const toVisit = [code];
-
-  while (toVisit.length > 0) {
-    const current = toVisit.pop();
-    if (visited.has(current)) continue;
-    visited.add(current);
-
-    const currMod = this.codeMap[current];
-    if (!currMod) continue;
-
-    // Forward links — modules listed by the current module
-    for (const target of currMod.group) {
-      const targetMod = this.codeMap[target];
-      if (!targetMod) continue;
-
-      // Check if the link is mutual
-      const mutual = targetMod.group.includes(current);
-      // Follow the link if mutual OR we are following forward from the initially clicked module
-      if (mutual || current === code) {
-        if (!visited.has(target)) toVisit.push(target);
+  findGroupMembers(code) {
+    const visited = new Set();
+    const toVisit = [code];
+    while (toVisit.length > 0) {
+      const current = toVisit.pop();
+      if (visited.has(current)) continue;
+      visited.add(current);
+      const currMod = this.codeMap[current];
+      if (!currMod) continue;
+      for (const target of currMod.group) {
+        const targetMod = this.codeMap[target];
+        if (!targetMod) continue;
+        const mutual = targetMod.group.includes(current);
+        if (mutual || current === code) {
+          if (!visited.has(target)) toVisit.push(target);
+        }
       }
     }
+    return Array.from(visited);
   }
 
-  return Array.from(visited);
-}
-
-
-
   handleModuleClick(module, e) {
+    // Don't toggle selection if the View link was clicked
+    if (e.target.closest('.view-link')) return;
     e.preventDefault();
     if (!this.selected.has(module.code) && !this.canSelect(module)) return;
     if (this.selected.has(module.code)) {
@@ -537,31 +583,25 @@ findGroupMembers(code) {
     this.renderGrid();
   }
 
-selectModule(code, recurse = false) {
-  if (this.selected.has(code)) return;
-
-  const groupMembers = this.findGroupMembers(code);
-  for (const c of groupMembers) {
-    const mod = this.codeMap[c];
-    if (!mod || this.selected.has(c)) continue;
-    this.selected.add(c);
-
-    // update credits
-    const isSplit = /Autumn\+Spring/i.test(mod.term);
-    const terms = isSplit ? ["Autumn", "Spring"]
-      : /Autumn/i.test(mod.term) ? ["Autumn"]
-      : ["Spring"];
-    terms.forEach(t => this.creditByTerm[t] += mod.credits / terms.length);
-  }
-
-  // Ensure "or" mutual exclusivity is still enforced
-  for (let group of this.orGroups) {
-    if (group.includes(code)) {
-      group.forEach(other => { if (other !== code) this.deselectModule(other); });
+  selectModule(code, recurse = false) {
+    if (this.selected.has(code)) return;
+    const groupMembers = this.findGroupMembers(code);
+    for (const c of groupMembers) {
+      const mod = this.codeMap[c];
+      if (!mod || this.selected.has(c)) continue;
+      this.selected.add(c);
+      const isSplit = /Autumn\+Spring/i.test(mod.term);
+      const terms = isSplit ? ["Autumn", "Spring"]
+        : /Autumn/i.test(mod.term) ? ["Autumn"]
+        : ["Spring"];
+      terms.forEach(t => this.creditByTerm[t] += mod.credits / terms.length);
+    }
+    for (let group of this.orGroups) {
+      if (group.includes(code)) {
+        group.forEach(other => { if (other !== code) this.deselectModule(other); });
+      }
     }
   }
-}
-
 
   deselectModule(code, recurse = false) {
     if (!this.selected.has(code)) return;
@@ -595,6 +635,9 @@ selectModule(code, recurse = false) {
         ? `${module.credits}<sup class="split-credit">(${module.credits/2}+${module.credits/2})</sup> credit`
         : `${module.credits} credit`;
 
+      const viewURL = "/MODULES/"+module.code+".html";
+      //"https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229618&inpopup=1"; //modulePageURL(module);
+
       const card = document.createElement("div");
       card.className = "module-card";
       if (this.selected.has(module.code)) {
@@ -612,6 +655,20 @@ selectModule(code, recurse = false) {
         </div>
         <div class="mod-row">
           <span class="mod-title">${module.name}</span>
+          <span class="view-link">
+            ${module.moodleUrl
+              ? `<a href="${module.moodleUrl}"
+                   title="View module details for ${module.name}"
+                   onclick="event.stopPropagation(); window.open('${module.moodleUrl}', 'moduleViewer', 'width=1000,height=700');return false;">
+                   View
+                 </a>`
+              : `<a href="${viewURL}"
+                   title="View module details for ${module.name}"
+                   onclick="event.stopPropagation(); openInIframe('${viewURL}', '${module.code} \u2013 ${module.name.replace(/'/g, "\\'")}'); return false;">
+                   View
+                 </a>`
+            }
+          </span>
         </div>
       `;
       card.addEventListener("click", this.handleModuleClick.bind(this, module));
@@ -643,6 +700,7 @@ selectModule(code, recurse = false) {
 
   updateSelectedList() {
     let html = "<h3>Current Selection</h3>";
+    html += "Select your options and use the following list as a guide for filling in the form on Moodle.";
     if (!this.selected.size) {
       html += "<div>No modules selected.</div>";
     } else {
@@ -659,12 +717,5 @@ selectModule(code, recurse = false) {
   }
 }
 </script>
-
-  <div id="iframe-modal" class="iframe-modal">
-  <div class="iframe-inner">
-    <button class="iframe-close" onclick="closeIframe()">Close</button>
-    <iframe id="module-iframe" src="" frameborder="0"></iframe>
-  </div>
-</div>
 </body>
 </html>
