@@ -1,22 +1,26 @@
 credits,term,type,code,name,core,or,exclude,group,moodleUrl
-15,Autumn,Theory,MA2801,Digital Aesthetics (Mon),core,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229625&inpopup=1
 30,Autumn+Spring,Practice,MA2800,Creative Digital and Social Media (Mon),core,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229653&inpopup=1
-15,Spring,Practice,MA2806,Data Journalism and Visualisation (Mon),core,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229639&inpopup=1
-15,Autumn,Theory,DTXXX.,Childhood on Stage and Screen (Tues),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1231704&inpopup=1
-15,Autumn,Theory,DTXXX..,Dance on Stage and Screen (Tues),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1231703&inpopup=1
-15,Autumn,Theory,DTXXX...,The Musical on Stage and Screen (Tues),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1231702&inpopup=1
-15,Autumn,Theory,MA2052,Documentary (Tue),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229630&inpopup=1
-15,Autumn,Theory,MA2080,Creative Industries (Tues),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229634&inpopup=1
-15,Spring,Theory,MA2015,Experimental Filmmaking (Tues),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229629&inpopup=1,
-15,Spring,Theory,MA20XX,Race and Power in Film and Media (Tues),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229619&inpopup=1
-15,Spring,Theory,MA2050,Videogames Politics Culture History (Tues),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229620&inpopup=1
-15,Spring,Practice,MA2803,Indie & Mobile Game Design (Thurs),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229638&inpopup=1
+30,Autumn+Spring,Practice,MA2020,Experimental Media: Practice & Exhibition (Thurs) (not with MA2014),option,,MA2014,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1230927&inpopup=1
+30,Autumn+Spring,Practice,MA2023,Animation & Visual Effects (Fri),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229649&inpopup=1
 30,Autumn+Spring,Practice,MA2004,Digital Documentary (Fri),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229642&inpopup=1
+30,Autumn+Spring,Practice,MA2022,Creative Sound Art & Design (Fri),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229648&inpopup=1
+30,Autumn+Spring,Practice,MA2807,Virtual Production Industry & Workflows (Fri),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229654&inpopup=1
+,,,,,,,,,,
 30,Autumn+Spring,Practice,MA2005,Screenwriting (Fri),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229643&inpopup=1
 30,Autumn+Spring,Practice,MA2006,Producing Film & Television (Fri),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229644&inpopup=1
 30,Autumn+Spring,Practice,MA2014,Production Design (Fri) (*Cannot be taken with MA2020),option,,MA2020,"   ",https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229652&inpopup=1
-30,Autumn+Spring,Practice,MA2020,Experimental Media: Practice & Exhibition (Thurs) (not with MA2014),option,,MA2014,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1230927&inpopup=1
-30,Autumn+Spring,Practice,MA2022,Creative Sound Art & Design (Fri),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229648&inpopup=1
-30,Autumn+Spring,Practice,MA2023,Animation & Visual Effects (Fri),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229649&inpopup=1
 30,Autumn+Spring,Practice,MA2027/8,Editing 1 & 2 (Thurs),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229649&inpopup=1
-30,Autumn+Spring,Practice,MA2807,Virtual Production Industry & Workflows (Fri),option,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229654&inpopup=1
+,,,,,,,,,,
+15,Autumn,Theory,MA2801,Digital Aesthetics (Mon),core,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229625&inpopup=1
+15,Autumn,Theory,MA2080,Creative Industries (Tues),option,,MA2052/DTXXX./DTXXX../DTXXX...,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229634&inpopup=1
+15,Autumn,Theory,MA2052,Documentary (Tue),option,,MA2080/DTXXX./DTXXX../DTXXX...,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229630&inpopup=1
+15,Autumn,Theory,DTXXX.,Childhood on Stage and Screen (Tues),option,,MA2052/MA2080/DTXXX../DTXXX...,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1231704&inpopup=1
+15,Autumn,Theory,DTXXX..,Dance on Stage and Screen (Tues),option,,MA2052/MA2080/DTXXX./DTXXX...,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1231703&inpopup=1
+15,Autumn,Theory,DTXXX...,The Musical on Stage and Screen (Tues),option,,MA2052/MA2080/DTXXX./DTXXX..,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1231702&inpopup=1
+,,,,,,,,,,
+15,Spring,Practice,MA2806,Data Journalism and Visualisation (Mon),core,,,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229639&inpopup=1
+15,Spring,Practice,MA2803,Indie & Mobile Game Design (Thurs),option,,MA2015/MA20XX/MA2050,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229638&inpopup=1
+15,Spring,Theory,MA2015,Experimental Filmmaking (Tues),option,,MA2803/MA20XX/MA2050,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229629&inpopup=1,
+15,Spring,Theory,MA20XX,Race and Power in Film and Media (Tues),option,,MA2803/MA2015/MA2050,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229619&inpopup=1
+15,Spring,Theory,MA2050,Videogames Politics Culture History (Tues),option,,MA2803/MA2015/MA20XX,,https://moodle.royalholloway.ac.uk/mod/page/view.php?id=1229620&inpopup=1
+,,,,,,,,,,
